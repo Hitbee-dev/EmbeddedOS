@@ -1,68 +1,51 @@
 #include<stdio.h>
  
 int main() {
-      int i, limit, total = 0, x, counter = 0, time_quantum;
-      int wait_time = 0, turnaround_time = 0, arrival_time[10], burst_time[10], temp[10];
-      float average_wait_time, average_turnaround_time;
-      printf("nEnter Total Number of Processes:t");
-      scanf("%d", &limit);
-      x = limit;
-      for(i = 0; i < limit; i++)
-      {
-            printf("nEnter Details of Process[%d]n", i + 1);
  
-            printf("Arrival Time:t");
- 
-            scanf("%d", &arrival_time[i]);
- 
-            printf("Burst Time:t");
- 
-            scanf("%d", &burst_time[i]);
- 
-            temp[i] = burst_time[i];
-      }
- 
-      printf("nEnter Time Quantum:t");
-      scanf("%d", &time_quantum);
-      printf("nProcess IDttBurst Timet Turnaround Timet Waiting Timen");
-      for(total = 0, i = 0; x != 0;)
-      {
-            if(temp[i] <= time_quantum && temp[i] > 0)
-            {
-                  total = total + temp[i];
-                  temp[i] = 0;
-                  counter = 1;
-            }
-            else if(temp[i] > 0)
-            {
-                  temp[i] = temp[i] - time_quantum;
-                  total = total + time_quantum;
-            }
-            if(temp[i] == 0 && counter == 1)
-            {
-                  x--;
-                  printf("nProcess[%d]tt%dtt %dttt %d", i + 1, burst_time[i], total - arrival_time[i], total - arrival_time[i] - burst_time[i]);
-                  wait_time = wait_time + total - arrival_time[i] - burst_time[i];
-                  turnaround_time = turnaround_time + total - arrival_time[i];
-                  counter = 0;
-            }
-            if(i == limit - 1)
-            {
-                  i = 0;
-            }
-            else if(arrival_time[i + 1] <= total)
-            {
-                  i++;
-            }
-            else
-            {
-                  i = 0;
-            }
-      }
- 
-      average_wait_time = wait_time * 1.0 / limit;
-      average_turnaround_time = turnaround_time * 1.0 / limit;
-      printf("nnAverage Waiting Time:t%f", average_wait_time);
-      printf("nAvg Turnaround Time:t%fn", average_turnaround_time);
-      return 0;
+  int count,j,n,time,remain,flag=0,time_quantum;
+  int wait_time=0,turnaround_time=0,at[10],bt[10],rt[10];
+  printf("프로세스 개수를 입력해 주세요.(최대 20개):");
+  scanf("%d",&n);
+  remain=n;
+  for(count=0;count<n;count++)
+  {
+    printf("p[%d]의 도착시간과 수행시간을 입력 해 주세요.\n",count+1);
+		scanf("%d %d",&at[count], &bt[count]);
+    rt[count]=bt[count];
+  }
+  printf("\n타임퀀텀: "); //얼만큼의 시간동안 작업하고 다른 프로세스와 교체할 지
+  scanf("%d",&time_quantum);
+  printf("\n\프로세스\t처리시간\t대기시간\n");
+  for(time=0,count=0;remain!=0;)
+  {
+    if(rt[count]<=time_quantum && rt[count]>0)
+    {
+      time+=rt[count];
+      rt[count]=0;
+      flag=1;
+    }
+    else if(rt[count]>0)
+    {
+      rt[count]-=time_quantum;
+      time+=time_quantum;
+    }
+    if(rt[count]==0 && flag==1)
+    {
+      remain--;
+      printf("P[%d]\t\t%d\t\t%d\n",count+1,time-at[count],time-at[count]-bt[count]);
+      wait_time+=time-at[count]-bt[count];
+      turnaround_time+=time-at[count];
+      flag=0;
+    }
+    if(count==n-1)
+      count=0;
+    else if(at[count+1]<=time)
+      count++;
+    else
+      count=0;
+  }
+  printf("\n평균 대기시간 = %f\n",wait_time*1.0/n);
+  printf("평균 처리시간 = %f",turnaround_time*1.0/n);
+  
+  return 0;
 }
